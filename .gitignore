@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.mypy_cache/
+
+.serverless/
+
+.venv/
+node_modules/
+
+tests/.pytest_cache/

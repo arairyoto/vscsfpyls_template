@@ -1,0 +1,115 @@
+service:
+  name: sampleservice
+
+frameworkVersion: '>=1.0.0 <2.0.0'
+
+plugins:
+  - serverless-python-requirements
+  - serverless-localstack
+
+custom:
+  customer: CUSTOMER
+  project: PROJECT
+  owner: ME
+  pythonRequirements:
+    usePipenv: true
+    dockerizePip: false
+  localstack:
+    host: http://localhost
+    autostart: false
+    stages:
+      - local
+    lambda:
+      mountCode: false
+    docker:
+      sudo: false
+
+package:
+  individually: true
+  exclude:
+    - .venv/**
+    - .vscode/**
+    - node_modules/**
+    - tests/**
+    - Pipfile
+    - Pipfile.lock
+    - package.json
+    - package-lock.json
+
+provider:
+  name: aws
+  runtime: python3.6
+  # ステージ
+  stage: ${opt:stage}
+  # リージョン
+  region: ${opt:region}
+  # スタック名
+  stackName: ${self:provider.stage}-${self:service.name}-${self:custom.project}
+  # プロファイル
+  profile: ${opt:profile}
+  # 資源をデプロイするS3バケット名
+  deploymentBucket:
+    name: deploymentbucket
+  # デプロイ資源のプレフィックス
+  deploymentPrefix: prefix
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: arn:aws:dynamodb:*:*:table/*
+  # 共通タグ
+  tags:
+    Envirounment: ${self:provider.stage}
+    Customer: ${self:custom.customer}
+    Project: ${self:custom.project}
+    Owner: ${self:custom.owner}
+
+# AWS Lambda Functions
+functions:
+  put:
+    handler: src/handler.put
+    name: ${self:provider.stage}-lambda-${self:service.name}-${self:custom.project}
+    description: sample api with dynamodb
+    # メモリ容量(MB)
+    memorySize: 128
+    # タイムアウト(s)
+    timeout: 30
+    # 環境変数
+    environment:
+      TABLE_NAME:
+        Ref: Ddb
+    # X-Rayの有効化
+    tracing: Active
+    # タグ
+    tags:
+      Name: ${self:provider.stage}-lambda-${self:service.name}-${self:custom.project}
+    events:
+      -
+        http:
+          path: put
+          method: post
+
+resources:
+  Resources:
+    Ddb:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+          -
+            AttributeName: name
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+          -
+            AttributeName: name
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: user
+
