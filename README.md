@@ -7,7 +7,7 @@ Windows10
 ## Requirements
 - AWS CLI installed
 - Node.js 8.10+ installed
-- Python 3.6+ installed
+- Python 3.6 installed
 - Docker installed
 - pipenv installed
 ```
@@ -48,6 +48,11 @@ $ sls deploy --stage local --region {REGION} --profile {PROFILE}
 ```
 - REGION：任意のAWSリージョンを入力
 - PROFILE：任意のプロファイル名を入力（どのプロファイルであっても問題ありません）
+### 環境変数設定
+Lambdaで環境変数を使用している場合は、環境変数を設定
+```
+$ export TABLE_NAME=user
+```
 ### テスト実行
 ```
 $ cd tests
