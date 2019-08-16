@@ -1,5 +1,5 @@
 {
-  "name": "vscode_python_template",
+  "name": "vscsfpyls_template",
   "version": "1.0.0",
   "description": "This reposotory is a project template for python development with VS Code.",
   "main": "index.js",
