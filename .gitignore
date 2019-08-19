@@ -6,6 +6,8 @@ __pycache__/
 
 .serverless/
 
+.dynamodb
+
 .venv/
 node_modules/
 
