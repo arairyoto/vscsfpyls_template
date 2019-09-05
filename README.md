@@ -7,8 +7,7 @@ Windows10
 ## Requirements
 - AWS CLI installed
 - Node.js 8.10+ installed
-- Python 3.6+ installed
-- Docker installed
+- Python 3.6 installed
 - pipenv installed
 ```
 $ pip install pipenv
@@ -18,11 +17,6 @@ $ pip install pipenv
 $ npm i serverless -g
 ```
 ## Setup
-### localstack
-```
-$ git clone https://github.com/localstack/localstack.git
-```
-※他ディレクトリにクローン
 ### Pythonモジュール
 ```
 $ export PIPENV_VENV_IN_PROJECT=1
@@ -32,22 +26,27 @@ $ pipenv sync
 ```
 $ npm i
 ```
-## Test
-### localstack起動
-localstackをクローンしたディレクトリに移り、localstackを起動
+### serverless-dynamodb-local
 ```
-$ export COMPOSE_CONVERT_WINDOWS_PATHS=1
-$ cd path/to/localstack
-$ docker-compose up
+$ sls dynamodb install
 ```
-※別プロセスで実行
-### ローカルデプロイ
-localstackにデプロイ（AWSにはデプロイされません）
+## Debug
+### serverless-offline起動
 ```
-$ sls deploy --stage local --region {REGION} --profile {PROFILE}
+$ sls offline start --stage local --region {REGION} --profile {PROFILE}
 ```
 - REGION：任意のAWSリージョンを入力
 - PROFILE：任意のプロファイル名を入力（どのプロファイルであっても問題ありません）
+### APIリクエスト
+http://localhost:3000にリクエストを送信
+## Test
+### serverless-offline起動
+```
+$ sls offline start --stage local --region {REGION} --profile {PROFILE}
+```
+- REGION：任意のAWSリージョンを入力
+- PROFILE：任意のプロファイル名を入力（どのプロファイルであっても問題ありません）
+※別プロセスで駆動
 ### テスト実行
 ```
 $ cd tests

@@ -5,7 +5,9 @@ frameworkVersion: '>=1.0.0 <2.0.0'
 
 plugins:
   - serverless-python-requirements
-  - serverless-localstack
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-offline-python
 
 custom:
   customer: CUSTOMER
@@ -14,21 +16,21 @@ custom:
   pythonRequirements:
     usePipenv: true
     dockerizePip: false
-  localstack:
-    host: http://localhost
-    autostart: false
+  dynamodb:
     stages:
       - local
-    lambda:
-      mountCode: false
-    docker:
-      sudo: false
+    start:
+      port: 8000
+      inMemory: false
+      migrate: true
+      seed: true
 
 package:
   individually: true
   exclude:
     - .venv/**
     - .vscode/**
+    - .dynamodb/**
     - node_modules/**
     - tests/**
     - Pipfile
@@ -76,8 +78,7 @@ functions:
     timeout: 30
     # 環境変数
     environment:
-      TABLE_NAME:
-        Ref: Ddb
+      TABLE_NAME: user
     # X-Rayの有効化
     tracing: Active
     # タグ
@@ -112,4 +113,3 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: user
-
